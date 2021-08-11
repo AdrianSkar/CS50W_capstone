@@ -1,0 +1,135 @@
+{% extends 'devref/layout.html' %}
+{% load static %}
+
+
+{% block title %}
+	<title>Devvy - {{ entry.name }}</title>
+{% endblock title %}
+
+{% block body %}
+<div class="container mb-5">
+
+	<h2 class="text-center my-3">
+		<span id="{{ entry.name }}">{{ entry.name }}</span>
+		<script>prepend_lang_icon( "{{entry.name}}", "{{entry.language}}".toLowerCase() );</script>
+		{% comment %} Already bookmarked? {% endcomment %}
+		{% if request.user in entry.bookmarked_by.all and user.is_authenticated %}
+			<button class="btn btn-sm no_outline" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-trigger="hover" title="Unbookmark this entry" id="bookmark"><i class="fas fa-bookmark"></i></button>
+		{% elif user.is_authenticated %}
+			<button class="btn btn-sm no_outline" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-trigger="hover" title="Bookmark this entry" id="bookmark"><i class="far fa-bookmark"></i></button>
+		{% endif %}
+
+	</h2>
+	
+	<div class="row m	b-5">
+
+		<aside class="col-sm-12 col-md-3 col-xl-2 mb-2 px-2">
+			<div class="row mx-0">
+
+				{% comment %} Sites menu {% endcomment %}
+				<div class='col col-sm-4 col-md-12 mb-3 list-group list-group-flush'>
+
+						{% comment %} Title + button {% endcomment %}
+						<div class="d-flex justify-content-between align-items-baseline border-bottom border-warning">
+							<h5 class="d-flex">Sites</h5>
+							{% if user.is_authenticated %}
+								<button class="btn btn-sm add_content no_outline" id='add_site'><i class="fas fa-plus fa-xxs" title='Add a site'></i></button>
+							{% endif %}
+						</div>
+
+					{% comment %} Links {% endcomment %}
+					{% for site in entry.get_pages %}
+						<a href="{{site.url}}" class="link list-group-item ms-1 px-1 py-1">{{ site.name }}</a><br>
+					{% endfor %}
+
+				</div>
+
+				{% comment %} Examples menu {% endcomment %}
+				<div class='col col-sm-4 col-md-12 mb-3 list-group list-group-flush'>
+
+						{% comment %} Title + button {% endcomment %}
+						<div class="d-flex justify-content-between align-items-baseline border-bottom border-warning">
+							<h5 class="d-flex">Examples</h5>
+							{% if user.is_authenticated %}
+								<button class="btn btn-sm add_content no_outline" id='add_example'><i class="fas fa-plus fa-xxs" title='Add an example'></i></button>
+							{% endif %}
+						</div>
+
+					{% comment %} Links {% endcomment %}
+					{% for site in entry.get_examples %}
+						{% comment %} Gist examples {% endcomment %}
+						{% if 'gist' in site.url %}
+							<a href="?gist={{ site.url }}" class="link list-group-item ms-1 px-1 py-1">{{ site.name }}</a><br>
+						{% comment %} Others {% endcomment %}
+						{% else %}
+							<a href="{{site.url}}" class="link list-group-item ms-1 px-1 py-1">{{ site.name }}</a><br>
+						{% endif %}
+					{% endfor %}
+
+				</div>
+
+				{% comment %} Notes menu {% endcomment %}
+				{% if user.is_authenticated %}
+				<div class='col col-sm-4 col-md-12 mb-3 list-group list-group-flush'>
+
+					{% comment %} Title + button {% endcomment %}
+					<div class='d-flex justify-content-between align-items-baseline border-bottom border-warning'>
+						<h5 class ="d-flex ">Notes </h5>
+						{% if user.is_authenticated %}
+							<button class="btn btn-sm add_content no_outline" id='add_note' name='add_note'><i class="fas fa-plus fa-xxs" title='Add a note'></i></button>
+						{% endif %}
+					</div>
+
+					{% comment %} Note links {% endcomment %}
+					{% for note in notes %}
+						<a href="?devvy_note={{note.id}}" class="link list-group-item ms-1 px-1 py-2">{{note.title}} <i class="fas fa-chevron-circle-right fa-xxs"></i> </a><br>
+					{% endfor %}
+
+				</div>
+				{% endif %}
+
+			</div>
+
+		</aside>
+		<main id="mc" class='col-sm-12 col-md-9 col-xl-10 px-2 p-sm-0' data-language={{ entry.language }}>
+
+		{% comment %} If there is a gist or note, render it {% endcomment %}
+		{% if gist_url %}
+			<script src="{{ gist_url }}.js"></script>
+
+		{% elif note_content %}
+			<div class="card border-light">
+				<h4 class="card-header bg-light bg-gradient text-secondary note_title">{{ note_content.title }}</h4>
+				<div class="card-body note_body">{{ note_content.content }}</div>
+				<div class="card-footer bg-light">
+					<button type='button' name='note_edit' class='btn btn-sm btn-warning' data-status='edit'><i class="far fa-edit"></i> edit</button>
+					<button type='button' name='note_delete' class='btn btn-sm btn-danger'><i class="far fa-trash-alt"></i> delete</button>
+				</div>
+			</div>
+
+		{% comment %} else, try with devdocs {% endcomment %}
+		{% elif devdocs %}
+			<iframe src="{{ devdocs.url }}" title="{{ devdocs.name}}'s iframe from devdocs.io" allow="fullscreen" width="100%" height="100%" frameborder="0">Your browser does not support iframes but you can still find the content <a href="{{ devdocs.url }}">here</a>.</iframe>
+
+		{% comment %} else, present message {% endcomment %}
+		{% else %}
+			{% if user.is_authenticated %}
+				{% comment %} Direct user to menu (entry.js:216) depending on its placement {% endcomment %}
+				<div id="no_content"></div>
+			{% else %}
+				{% comment %} Offer sign in {% endcomment %}
+				There are no reference pages yet, but you can <a href="{% url 'login' %}?next={{ request.path | urlencode }}">sign in</a> and add one!
+			{% endif %}
+		{% endif %}
+
+		</main>
+	</div>
+
+
+</div>
+<script>
+{% block entry_js %}
+	{% include 'devref/entry.js' %}
+{% endblock entry_js %}
+</script>
+{% endblock body %}

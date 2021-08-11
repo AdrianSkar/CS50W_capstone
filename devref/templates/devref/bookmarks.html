@@ -1,0 +1,29 @@
+{% extends 'devref/layout.html' %}
+
+{% block title %}
+	<title>Devvy - Bookmarks</title>
+{% endblock title %}
+
+{% block body %}
+
+<div class="container">
+
+	<h3 class="border-bottom my-3"> Bookmarked entries </h3>
+	<div class="row mt-2">
+		{% if bookmarks %}
+			<ul class='search_results'>
+				{% for entry in bookmarks %}
+					<li >
+						<a href="{% url 'entry' entry.name %}" id="{{ entry.name }}">{{ entry.name }} </a>	
+						<script>prepend_lang_icon( "{{entry.name}}", "{{entry.language}}".toLowerCase() );</script>
+					</li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<p>You have no entries bookmarked yet.</p>
+		{% endif %}
+	</div>
+	
+</div>
+
+{% endblock body %}

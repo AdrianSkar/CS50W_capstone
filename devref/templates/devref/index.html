@@ -1,0 +1,99 @@
+{% extends 'devref/layout.html' %}
+
+{% block body %}
+<div class="container">
+	
+	{% if message %}
+	{{ message }}
+	{% endif %}
+
+	{% comment %} Languages nav {% endcomment %}
+	<nav>
+		<div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+
+		{% for lang in entry_langs %}
+			{% with lang.0|lower as lang_name %}
+
+				<button class="nav-link lang_link {{lang_name}}_link" id="nav-{{lang_name}}-tab" 
+					data-bs-toggle="tab" data-bs-target="#nav-{{lang_name}}" type="button"
+					role="tab" aria-controls="nav-{{lang_name}}" aria-label="{{lang_name}}" 
+					aria-selected="false" 
+					title="{{lang_name}}">
+					<script>lang_nav("nav-{{lang_name}}-tab", "{{lang_name}}")</script>
+				</button>
+			
+			{% endwith %}
+		{% endfor %}
+
+		</div>
+	</nav>
+
+	{% comment %} Languages content/entries per language {% endcomment %}
+	<div class="tab-content">
+		
+		{% comment %} Render a tab option for each available language {% endcomment %}
+		{% for lang in entry_langs %}
+		  {% with lang.0|lower as lang_name %}
+			
+			{% comment %} Tab button {% endcomment %}
+			<div class="tab-pane fade" id="nav-{{ lang_name }}" role="tabpanel" 
+				aria-labelledby="nav-{{ lang_name }}-tab">
+				<ul class="lang_list mt-2 list-group list-group-flush">
+				
+						{% comment %} List entries for that language{% endcomment %}
+					{% for item in entries %}
+						{% if item.language|lower == lang_name %}
+							<a href="{% url 'entry' item.name %}" class="list-group-item index_entry">&#12290;{{ item.name }}</a>
+						{% endif %}
+					{% endfor %}
+					<p class="my-3 small d-inline-block">Not what you're looking for? You can add a new entry <a href="{% url 'new_entry' %}">here</a>.</p>
+
+				</ul>
+			</div>
+
+			{% endwith %}
+		{% endfor %}
+	</div>
+
+	<div class="container mt-2" id='index_default'>
+	Welcome to Devvy, a place to find and share code documentation, examples, and make your own notes. You can start by selecting a language or using the search box.
+	</div>
+
+</div>
+
+<script>	
+	// If language is present in url's hash, load that tab.
+	const tab_load = function(){
+		if (location.hash) {
+			const ele = document.querySelector(`#nav-${(location.hash).replace('#', '')}-tab`);
+			if (ele){
+				// Remove default index content
+				const default_index = document.querySelector('#index_default');
+				if (default_index) default_index.remove();
+				// Show new content
+				let tab = new bootstrap.Tab(ele);
+				tab.show();
+			}
+		}
+	}
+	tab_load();
+
+	// Push state and hash after navigating each tab.
+	const buttons = document.querySelectorAll('.lang_link');
+	buttons.forEach(button => {
+		// let lang = button.id.replace('nav-','').replace('-tab','');
+		const lang = button.id.match(/nav-(\w*)-tab/)[1];
+		button.addEventListener('click', function(event){
+			location.hash = lang;
+			document.title = `Devvy - ${lang}`;
+			history.replaceState({}, lang, `/#${lang}`);
+		})
+	})
+
+	// Load hashed tabs on browser forward/backwards too.
+	window.onpopstate = function(event){
+		tab_load();
+	}
+</script>
+
+{% endblock body %}

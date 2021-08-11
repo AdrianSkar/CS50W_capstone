@@ -1,0 +1,106 @@
+#logo {
+	width: 70px;
+}
+
+h1 {
+	color: brown;
+}
+
+.fa-xxs {
+	font-size: 0.6em;
+}
+
+#mc {
+	min-height: 50vh;
+}
+
+#menu_search {
+	background-color: transparent !important;
+}
+
+#menu_search:focus {
+	border-color: #ffc107 !important;
+}
+
+.index_entry {
+	border-bottom: 0 !important;
+	text-decoration: underline !important;
+}
+
+/* Redefine BS's style for bookmarks tooltip */
+
+.tooltip {
+	font-size: 0.6em !important;
+	/* color: #333 !important; */
+}
+
+.tooltip>.tooltip-inner {
+	box-shadow: 0 .03rem .03rem #eee;
+	background-color: transparent;
+	color: #333;
+	border: 1px solid #ced4da;
+}
+
+.bs-tooltip-auto[data-popper-placement^="right"] .tooltip-arrow::before, .bs-tooltip-end .tooltip-arrow::before {
+	border-right-color: #ced4da !important;
+}
+
+.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before, .bs-tooltip-top .tooltip-arrow::before {
+	border-top-color: #ced4da !important;
+}
+
+/* Index links and categories */
+
+.lang_link {
+	text-decoration: none !important;
+	color: inherit;
+}
+
+@media (max-width:390px) {
+	.lang_link.active, .lang_link:hover {
+		border-color: transparent !important;
+	}
+}
+
+.html_link:hover, .html_link:active, .html_link.active {
+	color: #e44d26 !important;
+}
+
+.css_link:hover, .css_link:active, .css_link.active {
+	color: #264de4 !important;
+}
+
+.js_link:hover, .js_link:active, .js_link.active {
+	color: #efd81d !important;
+}
+
+.py_link:hover, .py_link:active, .py_link.active {
+	color: #3474a6 !important;
+}
+
+.git_link:hover, .git_link:active, .git_link.active {
+	color: #e94e31 !important;
+}
+
+.lang_list {
+	list-style: none;
+}
+
+.search_results {
+	list-style-type: none;
+}
+
+.note_body {
+	white-space: pre-wrap;
+}
+
+.link {
+	overflow-wrap: break-word;
+}
+
+/* No outline for bookmark and add buttons */
+
+.no_outline:focus, .no_outline:active {
+	outline: none !important;
+	box-shadow: none !important;
+}

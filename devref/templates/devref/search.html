@@ -1,0 +1,36 @@
+{% extends 'devref/layout.html' %}
+
+{% block title %}
+	<title>Devvy - Search</title>
+{% endblock title %}
+
+{% block body %}
+<div class="container">
+
+	{% if query %}
+		<h3 class="border-bottom my-3">Entries matching the query<em>"{{ query }}"</em>:</h3>
+	{% elif  query == '' %}
+		<h3 class="border-bottom my-3">Empty query search, showing all entries:</h3>
+	{% endif %}
+
+	{% if no_match %}
+		<h3 class="border-bottom my-3">Oops</h3>
+		<p>No complete or partial matches found for the query "<em>{{ no_match }}</em>" but you can add a new entry <a href="{% url 'new_entry' %}">here</a>.</p>
+	{% else %}
+		
+		<div class="row mt-2">
+			<ul class='search_results'>
+				{% for entry in search_entries %}
+					<li >
+						<a href="{% url 'entry' entry.name %}" id="{{ entry.name }}">{{ entry.name }} </a>	
+						<script>prepend_lang_icon( "{{entry.name}}", "{{entry.language}}".toLowerCase() );</script>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>	
+		<p class="bg-light p-3 rounded-2 d-inline-block border">Not what you're looking for? You can add a new entry <a href="{% url 'new_entry' %}">here</a>.</p>
+
+	{% endif %}
+
+</div>
+{% endblock body %}

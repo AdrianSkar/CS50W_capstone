@@ -1,0 +1,24 @@
+{% extends 'devref/layout.html' %}
+
+{% block title %}
+	<title>Devvy - New entry</title>
+{% endblock title %}
+
+{% block body %}
+	<div class="container pt-2">
+
+		<h3>Add an entry</h3>
+
+		{% if message %}
+		<div>{{ message }}</div>
+		{% endif %}
+
+		<form action="{% url 'new_entry' %}" method="post">
+			{% csrf_token %}
+			{{ new_entry_form }}
+			<input type="hidden" name="next" value="{{ request.GET.next }}">
+			<input class="btn btn-primary mb-2" type="submit" value="Submit"> 
+		</form>
+
+	</div>
+{% endblock body %}
